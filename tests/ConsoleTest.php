@@ -25,6 +25,18 @@ class ConsoleTest extends TestCase
         $this->assertArrayHasKey('make:command', $commands);
         $this->assertArrayHasKey('serve', $commands);
         $this->assertArrayHasKey('clear:cache', $commands);
+        $this->assertArrayHasKey('tinker', $commands);
+    }
+
+    public function testTinkerCommandOneOffExecution(): void
+    {
+        $app = new Application();
+        ob_start();
+        $code = $app->run(['switch', 'tinker', '--execute=1 + 2']);
+        $output = ob_get_clean();
+
+        $this->assertEquals(0, $code);
+        $this->assertStringContainsString('3', $output);
     }
 
     public function testApplicationRunsHelpWithNoArgs(): void
