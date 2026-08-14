@@ -16,6 +16,10 @@ class RouteListCommand extends Command
     public function handle(): int
     {
         $router = new Router();
+        if (class_exists(\Switch\Router\Facade\Route::class)) {
+            \Switch\Router\Facade\Route::setRouter($router);
+        }
+
         $basePath = getcwd() ?: '.';
 
         $routesDir = $basePath . '/routes';
