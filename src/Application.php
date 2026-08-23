@@ -13,6 +13,7 @@ use Switch\Console\Command\MakeEventCommand;
 use Switch\Console\Command\MakeCommandCommand;
 use Switch\Console\Command\ServeCommand;
 use Switch\Console\Command\ClearCacheCommand;
+use Switch\Console\Command\StorageLinkCommand;
 use Switch\Console\Command\TinkerCommand;
 use Switch\Console\Command\RouteListCommand;
 use Switch\Console\Command\MigrateCommand;
@@ -50,6 +51,7 @@ class Application
         $this->add(new MakeCommandCommand());
         $this->add(new ServeCommand());
         $this->add(new ClearCacheCommand());
+        $this->add(new StorageLinkCommand());
         $this->add(new TinkerCommand());
 
         // Conditionally register route:list if router package is available
