@@ -8,24 +8,29 @@ class SignatureParser
 {
     /**
      * Parse a command signature string.
-     * Example: 'make:controller {name} {--resource} {--path=}'
+     * Example: 'make:controller {name} {--resource} {--path=}' or 'audit {--json : JSON output}'
      *
      * @return array{name: string, arguments: array<int, array>, options: array<string, array>}
      */
     public static function parse(string $signature): array
     {
-        $parts = preg_split('/\s+/', trim($signature)) ?: [];
-        $commandName = array_shift($parts) ?? '';
+        $signature = trim($signature);
+        $spacePos = strpos($signature, ' ');
+        $commandName = $spacePos !== false ? substr($signature, 0, $spacePos) : $signature;
 
         $arguments = [];
         $options = [];
 
-        foreach ($parts as $part) {
-            if (!str_starts_with($part, '{') || !str_ends_with($part, '}')) {
-                continue;
-            }
+        preg_match_all('/\{([^}]+)\}/', $signature, $matches);
 
-            $token = trim($part, '{}');
+        foreach ($matches[1] as $token) {
+            $token = trim($token);
+
+            // Strip inline description if present (e.g. "name : description" or "--json : output json")
+            $description = null;
+            if (str_contains($token, ':')) {
+                [$token, $description] = array_map('trim', explode(':', $token, 2));
+            }
 
             if (str_starts_with($token, '--')) {
                 // Option
@@ -46,6 +51,7 @@ class SignatureParser
                     'shortcut' => $shortcut,
                     'default' => $default,
                     'requiresValue' => str_contains($token, '='),
+                    'description' => $description,
                 ];
             } else {
                 // Argument
@@ -65,6 +71,7 @@ class SignatureParser
                     'name' => $argName,
                     'required' => $required,
                     'default' => $default,
+                    'description' => $description,
                 ];
             }
         }
