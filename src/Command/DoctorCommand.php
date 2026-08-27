@@ -19,12 +19,13 @@ class DoctorCommand extends Command
         $checks = [];
         $hasErrors = false;
 
-        // 1. PHP Version
+        // 1. PHP Version (>= 8.3 recommended)
         $phpOk = version_compare(PHP_VERSION, '8.2.0', '>=');
+        $isPhp83 = version_compare(PHP_VERSION, '8.3.0', '>=');
         $checks[] = [
             'Check' => 'PHP Runtime Version',
-            'Result' => $phpOk ? "\e[32m✔ PHP " . PHP_VERSION . "\e[0m" : "\e[31m✖ PHP " . PHP_VERSION . " (< 8.2)\e[0m",
-            'Note' => $phpOk ? 'Meets framework requirements' : 'Please upgrade to PHP 8.2 or newer',
+            'Result' => $isPhp83 ? "\e[32m✔ PHP " . PHP_VERSION . " (PHP 8.3+)\e[0m" : ($phpOk ? "\e[32m✔ PHP " . PHP_VERSION . " (>= 8.2)\e[0m" : "\e[31m✖ PHP " . PHP_VERSION . " (< 8.2)\e[0m"),
+            'Note' => $isPhp83 ? 'Meets modern PHP 8.3+ requirements' : 'Running PHP ' . PHP_VERSION . ' (PHP 8.3 recommended)',
         ];
         if (!$phpOk) $hasErrors = true;
 
