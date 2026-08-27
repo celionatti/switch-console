@@ -15,6 +15,8 @@ use Switch\Console\Command\MakeActionCommand;
 use Switch\Console\Command\MakeSeederCommand;
 use Switch\Console\Command\MakeProviderCommand;
 use Switch\Console\Command\MakeMailCommand;
+use Switch\Console\Command\MakeFlowCommand;
+use Switch\Console\Command\MakeServiceCommand;
 use Switch\Console\Command\DbSeedCommand;
 use Switch\Console\Command\ServeCommand;
 use Switch\Console\Command\ClearCacheCommand;
@@ -61,6 +63,8 @@ class Application
         $this->add(new MakeSeederCommand());
         $this->add(new MakeProviderCommand());
         $this->add(new MakeMailCommand());
+        $this->add(new MakeFlowCommand());
+        $this->add(new MakeServiceCommand());
         $this->add(new DbSeedCommand());
         $this->add(new ServeCommand());
         $this->add(new ClearCacheCommand());
