@@ -87,6 +87,11 @@ class Application
         if (class_exists(\Switch\Database\Connection\Connection::class)) {
             $this->add(new MigrateCommand());
         }
+
+        // Conditionally register diagram:export if diagram package is available
+        if (class_exists(\Switch\Diagram\Console\DiagramExportCommand::class)) {
+            $this->add(new \Switch\Diagram\Console\DiagramExportCommand());
+        }
     }
 
     /**
