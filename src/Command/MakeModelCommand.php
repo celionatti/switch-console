@@ -6,8 +6,8 @@ namespace Switch\Console\Command;
 
 class MakeModelCommand extends Command
 {
-    protected string $signature = 'make:model {name} {--m|migration}';
-    protected string $description = 'Create a new ORM Model class (optional --migration flag)';
+    protected string $signature = 'make:model {name} {--m|migration} {--c|controller} {--a|action} {--s|seeder}';
+    protected string $description = 'Create a new ORM Model class with optional migration, controller, action, or seeder';
     protected string $category = 'Generators (make)';
 
     public function handle(): int
@@ -64,6 +64,27 @@ PHP;
             $migCmd->setOutput($this->output);
             $migCmd->bindInput(["create_{$tableName}_table"]);
             $migCmd->handle();
+        }
+
+        if ($this->hasOption('controller')) {
+            $ctrlCmd = new MakeControllerCommand();
+            $ctrlCmd->setOutput($this->output);
+            $ctrlCmd->bindInput(["{$className}Controller"]);
+            $ctrlCmd->handle();
+        }
+
+        if ($this->hasOption('action')) {
+            $actCmd = new MakeActionCommand();
+            $actCmd->setOutput($this->output);
+            $actCmd->bindInput(["Create{$className}Action"]);
+            $actCmd->handle();
+        }
+
+        if ($this->hasOption('seeder')) {
+            $seedCmd = new MakeSeederCommand();
+            $seedCmd->setOutput($this->output);
+            $seedCmd->bindInput(["{$className}Seeder"]);
+            $seedCmd->handle();
         }
 
         return 0;

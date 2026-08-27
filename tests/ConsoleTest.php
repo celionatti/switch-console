@@ -393,6 +393,49 @@ class ConsoleTest extends TestCase
         }
     }
 
+    public function testMakeActionSeederProviderMailGenerators(): void
+    {
+        $tmpDir = sys_get_temp_dir() . '/switch_console_gens_' . uniqid();
+        mkdir($tmpDir, 0777, true);
+        $oldCwd = getcwd();
+
+        try {
+            chdir($tmpDir);
+            $app = new Application();
+
+            // Test make:action
+            ob_start();
+            $codeAction = $app->run(['switch', 'make:action', 'ProcessOrder']);
+            $outAction = ob_get_clean();
+            $this->assertEquals(0, $codeAction);
+            $this->assertFileExists($tmpDir . '/app/Actions/ProcessOrderAction.php');
+
+            // Test make:seeder
+            ob_start();
+            $codeSeeder = $app->run(['switch', 'make:seeder', 'User']);
+            $outSeeder = ob_get_clean();
+            $this->assertEquals(0, $codeSeeder);
+            $this->assertFileExists($tmpDir . '/database/seeders/UserSeeder.php');
+
+            // Test make:provider
+            ob_start();
+            $codeProvider = $app->run(['switch', 'make:provider', 'Payment']);
+            $outProvider = ob_get_clean();
+            $this->assertEquals(0, $codeProvider);
+            $this->assertFileExists($tmpDir . '/app/Providers/PaymentServiceProvider.php');
+
+            // Test make:mail
+            ob_start();
+            $codeMail = $app->run(['switch', 'make:mail', 'Welcome']);
+            $outMail = ob_get_clean();
+            $this->assertEquals(0, $codeMail);
+            $this->assertFileExists($tmpDir . '/app/Mail/WelcomeMail.php');
+        } finally {
+            chdir($oldCwd ?: '.');
+            $this->recursiveDelete($tmpDir);
+        }
+    }
+
     private function recursiveDelete(string $dir): void
     {
         if (!is_dir($dir)) return;
